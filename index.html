@@ -9,13 +9,20 @@
     <link rel="stylesheet" href="./assets/css/style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-database.js"></script>
 </head>
 
 <body>
 
-    <h1>Rock Paper Scissors!</h1>
+    <h1>Rock Paper Scissors</h1>
 
-    <button class="btn btn-default" id="submit" type="submit">Submit</button>
+    <input type="text" id="name-input">
+    <button id="player1Login">Player 1 Login</button>
+    <button id="player2Login">Player 2 Login</button>
+    <button id="player1Logout">Player 1 Logout</button>
+    <button id="player2Logout">Player 2 Logout</button>
+    <button id="play">Play!</button>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
