@@ -12,20 +12,23 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-let player = 0;
-let arr = [];
+var player = 0;
+var arr = [];
 
-let player1 = {
+
+var player1 = {
     choice: 'r',
     enabled: false,
     name: 'firstName',
+    ready: false,
     wins: 0,
 }
 
-let player2 = {
+var player2 = {
     choice: 'r',
     enabled: false,
     name: 'firstName',
+    ready: false,
     wins: 0,
 }
 
@@ -64,6 +67,7 @@ Player1.on('value', function (snapshot) {
     player1.enabled = snapshot.child("enabled").val();
     player1.name = snapshot.child("name").val();
     player1.choice = snapshot.child("choice").val();
+    player1.ready = snapshot.child("ready").val();
     if (player1.enabled) {
         $("#player1Login").prop("disabled", true);
         $("#player1Logout").prop("disabled", false);
@@ -71,11 +75,13 @@ Player1.on('value', function (snapshot) {
         $("#player1Login").prop("disabled", false);
         $("#player1Logout").prop("disabled", true);
     }
+    playRound();
 });
 Player2.on('value', function (snapshot) {
     player2.enabled = snapshot.child("enabled").val();
     player2.name = snapshot.child("name").val();
     player2.choice = snapshot.child("choice").val();
+    player2.ready = snapshot.child("ready").val();
     if (player2.enabled) {
         $("#player2Login").prop("disabled", true);
         $("#player2Logout").prop("disabled", false);
@@ -83,6 +89,7 @@ Player2.on('value', function (snapshot) {
         $("#player2Login").prop("disabled", false);
         $("#player2Logout").prop("disabled", true);
     }
+    playRound();
 });
 
 function send() {
@@ -124,19 +131,42 @@ $(document).on("click", "#scissors", function () {
     send()
 });
 
-$(document).on("click", "#play", function () {
+$(document).on("click", "#ready", function () {
+
     if (player1.enabled && player2.enabled) {
-        console.log('Ready to Play!');
-        var intervalId;
-        var number = 4;
-        intervalId = setInterval(decrement, 1000);
-    } else if (player1.enabled) {
-        console.log('Player 2 Login Required');
-    } else if (player2.enabled) {
-        console.log('Player 1 Login Required');
-    } else {
-        console.log('Please log in to Play');
+        if (sessionStorage.getItem("player") == 1) {
+            player1.ready = true;
+            Player1.set(player1);
+        }
+        if (sessionStorage.getItem("player") == 2) {
+            player2.ready = true;
+            Player2.set(player2);
+        }
     }
+});
+
+function playRound() {
+    if (player1.enabled && player2.enabled) {
+        if (player1.ready && player2.ready) {
+            player1.ready = false;
+            player2.ready = false;
+            send();
+            console.log('Ready to Play!');
+            // Generate RPS Divs
+            var intervalId;
+            var number = 4;
+            intervalId = setInterval(decrement, 1000);
+            player1.ready = false;
+            player2.ready = false;
+        }
+        else if (player1.ready)
+            console.log('Waiting for Player 2!');
+        else if (player2.ready)
+            console.log('Waiting for Player 1!');
+        else
+            console.log('Press Ready!');
+    }
+
     function decrement() {
         number--;
         $("#timer").html("<h2>" + number + "</h2>");
@@ -147,7 +177,7 @@ $(document).on("click", "#play", function () {
             number = 4;
         }
     }
-});
+}
 
 function round(p1, p2) {
     str = p1 + p2;
