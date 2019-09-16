@@ -1,4 +1,3 @@
-
 // Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAOwvzg7VJYDiS11LmWOyBEtmAbPmbKkx0",
@@ -11,7 +10,6 @@ const firebaseConfig = {
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-
 const database = firebase.database();
 
 let player = 0;
@@ -35,56 +33,38 @@ const Player1 = database.ref('users/Player1');
 const Player2 = database.ref('users/Player2');
 
 $(document).on("click", "#player1Login", function () {
-    player = 1;
     player1.enabled = true;
     player1.name = $("#name-input").val();
-    localStorage.setItem("player", 1);
-    send();
+    sessionStorage.setItem("player", 1);
+    Player1.set(player1);
 
 });
 $(document).on("click", "#player2Login", function () {
-    player = 2;
     player2.enabled = true;
     player2.name = $("#name-input").val();
-    localStorage.setItem("player", 2);
-    send();
+    sessionStorage.setItem("player", 2);
+    Player2.set(player2);
 });
 $(document).on("click", "#player1Logout", function () {
-    player = 0;
     player1.enabled = false;
-    player1.name = "firstName";
+    player1.name = "logout";
     player1.wins = 0;
-    localStorage.setItem("player", 0);
-    send();
+    sessionStorage.setItem("player", 0);
+    Player1.set(player1);
 });
 $(document).on("click", "#player2Logout", function () {
-    player = 0;
     player2.enabled = false;
-    player2.name = "firstName";
+    player2.name = "logout";
     player2.wins = 0;
-    localStorage.setItem("player", 0);
-    send();
+    sessionStorage.setItem("player", 0);
+    Player2.set(player2);
 });
 
-$(document).on("click", "#play", function () {
-    if (player1.enabled && player2.enabled) {
-        console.log('Ready to Play!');
-        run();
-    } else if (player1.enabled) {
-        console.log('Player 2 Login Required');
-    } else if (player2.enabled) {
-        console.log('Player 1 Login Required');
-    } else {
-        console.log('Please log in to Play');
-    }
-});
-
-
-var ref = database.ref("users");
-ref.on('value', function (snapshot) {
-    var p1Enabled = snapshot.child("Player1").child("enabled").val();
-    player1.enabled = p1Enabled;
-    if (p1Enabled) {
+Player1.on('value', function (snapshot) {
+    player1.enabled = snapshot.child("enabled").val();
+    player1.name = snapshot.child("name").val();
+    player1.choice = snapshot.child("choice").val();
+    if (player1.enabled) {
         $("#player1Login").prop("disabled", true);
         $("#player1Logout").prop("disabled", false);
     } else {
@@ -92,12 +72,11 @@ ref.on('value', function (snapshot) {
         $("#player1Logout").prop("disabled", true);
     }
 });
-
-var ref = firebase.database().ref("users");
-ref.on('value', function (snapshot) {
-    var p2Enabled = snapshot.child("Player2").child("enabled").val();
-    player2.enabled = p2Enabled;
-    if (p2Enabled) {
+Player2.on('value', function (snapshot) {
+    player2.enabled = snapshot.child("enabled").val();
+    player2.name = snapshot.child("name").val();
+    player2.choice = snapshot.child("choice").val();
+    if (player2.enabled) {
         $("#player2Login").prop("disabled", true);
         $("#player2Logout").prop("disabled", false);
     } else {
@@ -106,49 +85,69 @@ ref.on('value', function (snapshot) {
     }
 });
 
+function send() {
+    Player1.set(player1);
+    Player2.set(player2);
+}
+
+
 $(document).on("click", "#rock", function () {
-    if (localStorage.getItem("player") == 1) {
+    if (sessionStorage.getItem("player") == 1) {
         player1.choice = 'r';
+        console.log(player1.choice);
     } else {
         player2.choice = 'r';
+        console.log(player2.choice);
     }
     send()
 });
 
 $(document).on("click", "#paper", function () {
-    if (localStorage.getItem("player") == 1) {
+    if (sessionStorage.getItem("player") == 1) {
         player1.choice = 'p';
+        console.log(player1.choice);
     } else {
         player2.choice = 'p';
+        console.log(player2.choice);
     }
     send()
 });
 
 $(document).on("click", "#scissors", function () {
-    if (localStorage.getItem("player") == 1) {
+    if (sessionStorage.getItem("player") == 1) {
         player1.choice = 's';
+        console.log(player1.choice);
     } else {
         player2.choice = 's';
+        console.log(player2.choice);
     }
     send()
 });
 
-
-var number = 4;
-var intervalId;
-function run() {
-    intervalId = setInterval(decrement, 1000);
-}
-function decrement() {
-    number--;
-    $("#timer").html("<h2>" + number + "</h2>");
-    if (number === 0) {
-        clearInterval(intervalId);
-        console.log(player1.choice, player2.choice);
-        round(player1.choice, player2.choice);
-        number = 4;
+$(document).on("click", "#play", function () {
+    if (player1.enabled && player2.enabled) {
+        console.log('Ready to Play!');
+        var intervalId;
+        var number = 4;
+        intervalId = setInterval(decrement, 1000);
+    } else if (player1.enabled) {
+        console.log('Player 2 Login Required');
+    } else if (player2.enabled) {
+        console.log('Player 1 Login Required');
+    } else {
+        console.log('Please log in to Play');
     }
-}
+    function decrement() {
+        number--;
+        $("#timer").html("<h2>" + number + "</h2>");
+        if (number === 0) {
+            clearInterval(intervalId);
+            console.log(player1.choice, player2.choice);
+            round(player1.choice, player2.choice);
+            number = 4;
+        }
+    }
+});
 
 function round(p1, p2) {
     str = p1 + p2;
@@ -181,13 +180,8 @@ function tie() {
     console.log('Tie!');
 }
 
-function send() {
-    Player1.set(player1);
-    Player2.set(player2);
-}
-
 // window.onunload = function (e) {
-//     if (localStorage.getItem("player") === 1){
+//     if (sessionStorage.getItem("player") === 1){
 //         player1.enabled = false;
 //         Player1.set(player1);
 //     }else{
