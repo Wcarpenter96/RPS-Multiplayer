@@ -14,7 +14,7 @@ const database = firebase.database();
 
 var player = 0;
 var arr = [];
-
+$('#ready').html('<div><h1>READY</h1><div>').addClass('ready m-5 border');
 
 var player1 = {
     choice: 'r',
@@ -40,6 +40,7 @@ $(document).on("click", "#player1Login", function () {
     player1.name = $("#name-input").val();
     sessionStorage.setItem("player", 1);
     Player1.set(player1);
+    window.location.href = 'game.html';
 
 });
 $(document).on("click", "#player2Login", function () {
@@ -47,6 +48,7 @@ $(document).on("click", "#player2Login", function () {
     player2.name = $("#name-input").val();
     sessionStorage.setItem("player", 2);
     Player2.set(player2);
+    window.location.href = 'game.html';
 });
 $(document).on("click", "#player1Logout", function () {
     player1.enabled = false;
@@ -54,6 +56,7 @@ $(document).on("click", "#player1Logout", function () {
     player1.wins = 0;
     sessionStorage.setItem("player", 0);
     Player1.set(player1);
+    window.location.href = 'index.html';
 });
 $(document).on("click", "#player2Logout", function () {
     player2.enabled = false;
@@ -61,6 +64,7 @@ $(document).on("click", "#player2Logout", function () {
     player2.wins = 0;
     sessionStorage.setItem("player", 0);
     Player2.set(player2);
+    window.location.href = 'index.html';
 });
 
 Player1.on('value', function (snapshot) {
@@ -98,7 +102,7 @@ function send() {
 }
 
 
-$(document).on("click", "#rock", function () {
+$(document).on("click", ".rock", function () {
     if (sessionStorage.getItem("player") == 1) {
         player1.choice = 'r';
         console.log(player1.choice);
@@ -109,7 +113,7 @@ $(document).on("click", "#rock", function () {
     send()
 });
 
-$(document).on("click", "#paper", function () {
+$(document).on("click", ".paper", function () {
     if (sessionStorage.getItem("player") == 1) {
         player1.choice = 'p';
         console.log(player1.choice);
@@ -120,7 +124,7 @@ $(document).on("click", "#paper", function () {
     send()
 });
 
-$(document).on("click", "#scissors", function () {
+$(document).on("click", ".scissors", function () {
     if (sessionStorage.getItem("player") == 1) {
         player1.choice = 's';
         console.log(player1.choice);
@@ -131,7 +135,7 @@ $(document).on("click", "#scissors", function () {
     send()
 });
 
-$(document).on("click", "#ready", function () {
+$(document).on("click", ".ready", function () {
 
     if (player1.enabled && player2.enabled) {
         if (sessionStorage.getItem("player") == 1) {
@@ -145,6 +149,14 @@ $(document).on("click", "#ready", function () {
     }
 });
 
+$(document).on("mouseenter", ".ready", function() {
+    $(this).css("background-color","yellow");
+});
+
+$(document).on("mouseleave", ".ready", function() {
+    $(this).css("background-color","white");
+});
+
 function playRound() {
     if (player1.enabled && player2.enabled) {
         if (player1.ready && player2.ready) {
@@ -152,12 +164,13 @@ function playRound() {
             player2.ready = false;
             send();
             console.log('Ready to Play!');
-            // Generate RPS Divs
+            $('#rock').html('<div><h1>Rock</h1></div>').addClass('rock bg-dark text-light');
+            $('#paper').html('<div><h1>Paper</h1></div>').addClass('paper bg-muted text-dark');
+            $('#scissors').html('<div><h1>Scissors</h1></div>').addClass('scissors bg-primary text-light');
+            console.log('generated');
             var intervalId;
             var number = 4;
             intervalId = setInterval(decrement, 1000);
-            player1.ready = false;
-            player2.ready = false;
         }
         else if (player1.ready)
             console.log('Waiting for Player 2!');
@@ -169,7 +182,7 @@ function playRound() {
 
     function decrement() {
         number--;
-        $("#timer").html("<h2>" + number + "</h2>");
+        $("#ready").html("<h2>" + number + "</h2>");
         if (number === 0) {
             clearInterval(intervalId);
             console.log(player1.choice, player2.choice);
@@ -180,6 +193,10 @@ function playRound() {
 }
 
 function round(p1, p2) {
+    $('#info').empty();
+    $('#rock').empty();
+    $('#paper').empty();
+    $('#scissors').empty();
     str = p1 + p2;
     switch (str) {
         case 'rr':
@@ -200,14 +217,16 @@ function round(p1, p2) {
     }
 }
 function win(player) {
-    console.log(`${player.name} is the winner!`);
+    $('#info').append(`<h1>${player.name} is the winner!</h1>`);
     player.wins++;
     Player1.set(player1);
     Player2.set(player2);
-    console.log(`${player.name} has won ${player.wins} times!`);
+    $('#info').append(`<h1>${player.name} has won ${player.wins} times!</h1>`);
+    $('#ready').html('<div><h1>READY</h1><div>').addClass('ready m-5');
 }
 function tie() {
-    console.log('Tie!');
+    $('#info').append('<h1>Tie!</h1>');
+    $('#ready').html('<div><h1>READY</h1><div>').addClass('ready m-5');
 }
 
 // window.onunload = function (e) {

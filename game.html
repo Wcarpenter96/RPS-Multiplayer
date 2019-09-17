@@ -14,25 +14,28 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="row">
+    <button id="player1Logout">Player 1 Logout</button>
+    <button id="player2Logout">Player 2 Logout</button>
+    <div class="container text-center">
+        <div class="row bg-secondary justify-content-center">
             <div class="col">
-                <h1>ROCK PAPER SCISSORS</h1>
+                <h1>Rock Paper Scissors</h1>
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                Type your name here, and select a player: <input type="text" id="name-input">
+        <div class="row justify-content-center">
+            <div class="col-4 offset-4" id="ready">
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                <button id="player1Login">Player 1 Login</button>
-                <button id="player2Login">Player 2 Login</button>
+        <div class="row justify-content-center">
+            <div class="col-4" id="rock"></div>
+            <div class="col-4" id="paper"></div>
+            <div class="col-4" id="scissors"></div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12" id="info">
             </div>
         </div>
     </div>
-
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
