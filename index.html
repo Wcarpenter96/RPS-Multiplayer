@@ -9,26 +9,27 @@
     <link rel="stylesheet" href="./assets/css/style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Manjari&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-database.js"></script>
 </head>
 
 <body>
-    <div class="container">
+    <div class="container text-center">
+        <div class="row justify-content-center">
+            <div class="col bg-secondary p-2">
+                <h1 class="display-2">Rock Paper Scissors</h1>
+            </div>
+        </div>
         <div class="row">
-            <div class="col">
-                <h1>ROCK PAPER SCISSORS</h1>
+            <div class="col m-5">
+                Name: <input type="text" id="name-input">
             </div>
         </div>
         <div class="row">
             <div class="col">
-                Type your name here, and select a player: <input type="text" id="name-input">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <button id="player1Login">Player 1 Login</button>
-                <button id="player2Login">Player 2 Login</button>
+                <button class = "btn border" id="player1Login">Player 1</button>
+                <button class = "btn border" id="player2Login">Player 2</button>
             </div>
         </div>
     </div>
